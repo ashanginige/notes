@@ -1,11 +1,14 @@
 package com.ginige.ashan.notes;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.ginige.ashan.notes.Util.ProviderPathesManager;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,12 +43,14 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class NoteDetailsActivity extends AppCompatActivity {
 
+    private Context context = NoteDetailsActivity.this;
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
     public User user;
@@ -62,6 +68,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private ProgressDialog progressDialog;
     private String ImageURL;
+    private Uri extraImageURI;
 
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 10;
@@ -86,7 +93,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
         progressDialog.setCanceledOnTouchOutside(false);
 
         storageReference = FirebaseStorage.getInstance().getReference();
-        noteImage= findViewById(R.id.noteImage);
+        noteImage = findViewById(R.id.noteImage);
         camButton = findViewById(R.id.camButton);
         camButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,42 +105,57 @@ public class NoteDetailsActivity extends AppCompatActivity {
         });
 
         firebaseAuth = FirebaseAuth.getInstance();
-        if(firebaseAuth.getCurrentUser() != null){
+        if (firebaseAuth.getCurrentUser() != null) {
             user = new User(firebaseAuth.getCurrentUser().getUid());
         }
-        if(processID == Constants.EDIT_NOTE_VALUE) {
+        if (processID == Constants.EDIT_NOTE_VALUE) {
             this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             noteDetailsMainLayout = findViewById(R.id.noteDetailsMainLayout);
             noteDetailsMainLayout.setFocusable(true);
             noteDetailsMainLayout.setFocusableInTouchMode(true);
-            setData(user.getId(),intent.getStringExtra(Constants.NOTE_ID_KEY));
+            setData(user.getId(), intent.getStringExtra(Constants.NOTE_ID_KEY));
         }
 
 
-        if (ContextCompat.checkSelfPermission(NoteDetailsActivity.this,
-                android.Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(NoteDetailsActivity.this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 
-            if (ActivityCompat.shouldShowRequestPermissionRationale(NoteDetailsActivity.this,
-                    android.Manifest.permission.CAMERA)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(NoteDetailsActivity.this, android.Manifest.permission.CAMERA)) {
 
             } else {
-                ActivityCompat.requestPermissions(NoteDetailsActivity.this,
-                        new String[]{ android.Manifest.permission.CAMERA},
-                        CAMERA_PERMISSION_REQUEST_CODE);
-
+                ActivityCompat.requestPermissions(NoteDetailsActivity.this, new String[]{android.Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
             }
         } else {
             camButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, extraImageURI);
                     startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
                 }
             });
         }
 
+        setExtraImageUri();
+    }
+
+    private void setExtraImageUri() {
+        boolean shouldAsk = false;
+        ArrayList<String> strings = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            shouldAsk = true;
+            strings.add(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            shouldAsk = true;
+            strings.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (shouldAsk) {
+            ActivityCompat.requestPermissions(this, strings.toArray(new String[strings.size()]), CAMERA_PERMISSION_REQUEST_CODE);
+        } else {
+            extraImageURI = ProviderPathesManager.getCameraImageLocationUri(context);
+        }
     }
 
     @Override
@@ -148,8 +170,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case CAMERA_PERMISSION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -165,14 +186,19 @@ public class NoteDetailsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
-
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             progressDialog.show();
-
-            Uri uri = data.getData();
+            Uri uri;
+            if (data == null) {
+                uri = extraImageURI;
+            }else{
+                uri = data.getData();
+                if (uri == null) {
+                    uri = extraImageURI;
+                }
+            }
 
             StorageReference filepath = storageReference.child("photos").child(uri.getLastPathSegment());
-
             filepath.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -182,7 +208,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
                     ImageURL = downloadUri.toString();
                     Picasso.get().load(downloadUri).into(noteImage);
 
-                    Toast.makeText(NoteDetailsActivity.this,  "Finish Uploading", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NoteDetailsActivity.this, "Finish Uploading", Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -190,7 +216,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(!noteTitle.getText().toString().equalsIgnoreCase("") && !noteBody.getText().toString().equalsIgnoreCase("") ){
+        if (!noteTitle.getText().toString().equalsIgnoreCase("") && !noteBody.getText().toString().equalsIgnoreCase("")) {
             isNoteEmpty = false;
         } else {
             isNoteEmpty = true;
@@ -201,10 +227,10 @@ public class NoteDetailsActivity extends AppCompatActivity {
             final Intent intent = getIntent();
             processID = intent.getIntExtra(Constants.NOTE_PROCESS, 0);
 
-            if(!noteTitle.getText().toString().equalsIgnoreCase("") && !noteBody.getText().toString().equalsIgnoreCase("") ){
-                if(processID == 2000) {
+            if (!noteTitle.getText().toString().equalsIgnoreCase("") && !noteBody.getText().toString().equalsIgnoreCase("")) {
+                if (processID == 2000) {
                     addNewNote(user.getId(), noteTitle.getText().toString(), noteBody.getText().toString(), Calendar.getInstance().getTime(), ImageURL);
-                } else if(processID == 1000) {
+                } else if (processID == 1000) {
                     editNote(user.getId(), intent.getStringExtra(Constants.NOTE_ID_KEY), noteTitle.getText().toString(), noteBody.getText().toString(), Calendar.getInstance().getTime(), ImageURL);
                 }
             }
@@ -217,7 +243,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
 
         this.doubleBackToExitPressedOnce = true;
 
-        if(isNoteEmpty){
+        if (isNoteEmpty) {
             Snackbar.make(findViewById(R.id.noteDetailsMainLayout), "Note is INCOMPLETE and will NOT SAVE", Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(findViewById(R.id.noteDetailsMainLayout), "Please click BACK again to SAVE and exit", Snackbar.LENGTH_SHORT).show();
@@ -227,7 +253,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }
@@ -240,19 +266,19 @@ public class NoteDetailsActivity extends AppCompatActivity {
         notesDatabaseRef.setValue(noteDetails);
     }
 
-    private void editNote(String userId,String noteID, String title, String body, Date date, String imageURL){
+    private void editNote(String userId, String noteID, String title, String body, Date date, String imageURL) {
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.UK);
         notesDatabaseRef = mDatabase.child("users").child(userId).child("notes").child(noteID);
         NoteDetails noteDetails = new NoteDetails(title, body, formatter.format(date), imageURL);
         notesDatabaseRef.setValue(noteDetails);
     }
 
-    private void setData(String userId, String noteID){
+    private void setData(String userId, String noteID) {
         notesDatabaseRef = mDatabase.child("users").child(userId).child("notes").child(noteID);
         listener = notesDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot != null) {
+                if (dataSnapshot != null) {
                     noteDetails = dataSnapshot.getValue(NoteDetails.class);
                     noteDetails.setNoteID(dataSnapshot.getKey());
                     noteTitle.setText(noteDetails.getTitle());
@@ -264,7 +290,7 @@ public class NoteDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e("The read failed: " ,databaseError.getMessage());
+                Log.e("The read failed: ", databaseError.getMessage());
             }
 
         });

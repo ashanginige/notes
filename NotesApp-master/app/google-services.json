@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "866815481173",
-    "firebase_url": "https://notes-b1159.firebaseio.com",
-    "project_id": "notes-b1159",
-    "storage_bucket": "notes-b1159.appspot.com"
+    "project_number": "930037377603",
+    "firebase_url": "https://notes-ea132.firebaseio.com",
+    "project_id": "notes-ea132",
+    "storage_bucket": "notes-ea132.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:866815481173:android:b3885377d8a49201",
+        "mobilesdk_app_id": "1:930037377603:android:87657ec551042acc",
         "android_client_info": {
-          "package_name": "com.hardstudio.hasthi.notes"
+          "package_name": "com.ginige.ashan.notes"
         }
       },
       "oauth_client": [
         {
-          "client_id": "866815481173-2intt2848cjdq480aab5vss23fg9skh3.apps.googleusercontent.com",
+          "client_id": "930037377603-ouiht4mnlum1pk3nnl1gd4cnlj1to7p9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.hardstudio.hasthi.notes",
-            "certificate_hash": "7dc83d76c190a71f6858761c72d0e44caf5fa6dd"
+            "package_name": "com.ginige.ashan.notes",
+            "certificate_hash": "fa573edadc824b40b946fc199b8bc0661cd08a23"
           }
         },
         {
-          "client_id": "866815481173-e8vnj2jg0u7kpnr3qc81bro7753r2prr.apps.googleusercontent.com",
+          "client_id": "930037377603-rbpnl8bhq99f9ld001441bodhpssqb78.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA29Q9E_FsR8F6vHwO6iu6lP0PeG7b0dXM"
+          "current_key": "AIzaSyAIf7Rl1tBe_c7QIkmmGGM-5tUt6MsCz7g"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "866815481173-e8vnj2jg0u7kpnr3qc81bro7753r2prr.apps.googleusercontent.com",
+              "client_id": "930037377603-rbpnl8bhq99f9ld001441bodhpssqb78.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
