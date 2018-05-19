@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#7b52b2</color>
+    <color name="colorPrimaryDark">#674596</color>
+    <color name="colorAccent">#f77327</color>
+
+    <!--Sign In Screen-->
+    <color name="signInButtonTextColor">#ffffff</color>
+
+    <!--Notes Screen-->
+    <color name="floatingButtonColor">#f77327</color>
+    <color name="floatingButtonRippleColor">#d35004</color>
+
+    <!--Note Details Color-->
+    <color name="noteTitleTextColor">#000000</color>
+    <color name="noteTitleHintColor">#191919</color>
+
+    <color name="noteBodyTextColor">#232323</color>
+    <color name="noteBodyHintColor">#494949</color>
+
+    <!--note Adapter-->
+    <color name="iconTint">#c4c4c4</color>
+    <color name="textDeleteColor">#ffffff</color>
+</resources>

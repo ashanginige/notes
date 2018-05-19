@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/noteDetailsMainLayout"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NoteDetailsActivity">
+
+    <EditText
+        android:layout_margin="20dp"
+        android:id="@+id/noteTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:maxLength="24"
+        android:inputType="text"
+        android:ellipsize="end"
+        android:background="@android:color/transparent"
+        android:textColor="@color/noteTitleTextColor"
+        android:hint="Title"
+        android:textColorHint="@color/noteTitleHintColor"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <EditText
+        android:layout_margin="20dp"
+        android:id="@+id/noteBody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="9"
+        android:scrollbars="vertical"
+        android:background="@android:color/transparent"
+        android:textColor="@color/noteBodyTextColor"
+        android:hint="Your note goes here"
+        android:textColorHint="@color/noteBodyHintColor"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/noteTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <ImageView
+        android:layout_margin="20dp"
+        android:id="@+id/noteImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/noteBody" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/camButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/baseline_photo_camera_24"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:rippleColor="@color/floatingButtonRippleColor"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

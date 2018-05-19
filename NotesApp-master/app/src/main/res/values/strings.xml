@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Notes</string>
+    <!--SignIn Page-->
+    <string name="welcome_text">Welcome To\nNotes.</string>
+</resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/noteBlock"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/noteIcon"
+        android:padding="13dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/note_icon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/noteAdapterBlockTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:text="Title"
+        android:textColor="@color/noteTitleTextColor"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@+id/noteIcon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <TextView
+        android:layout_marginRight="10dp"
+        android:id="@+id/noteAdapterBlockBody"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:textColor="@color/noteBodyHintColor"
+        android:text="22/22/2222 - Body Body Body BodyBodyBodyBodyBodyBodyBodyBodyBodyBodyBody"
+        app:layout_constraintLeft_toRightOf="@+id/noteIcon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noteAdapterBlockTitle"/>
+
+    <View
+        android:layout_marginRight="10dp"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#70c0c0c0"
+        app:layout_constraintLeft_toRightOf="@+id/noteIcon"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>
